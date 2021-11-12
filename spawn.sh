@@ -1,10 +1,4 @@
 #!/bin/sh
-# Single example: sudo ./this_script.sh my_expressvpn_hong_kong_-_2_udp.ovpn EXPRESSVPN 8120 express_vpn_username express_vpn_password
-# Batch example: sudo ./this_script.sh list EXPRESSVPN 8120 express_vpn_username express_vpn_password
-# The second parameter (8120) dedines the port to begin the container assignment with, incrementing on each container creation.
-# If a container creation fails, the script will just continue to create the rest. But non-functional ones will not run, so
-# all non-running ones after script is done, are non-functional ones and can be deleted.
-# A list extracted from the script can be found here: https://gist.github.com/DoganM95/3edf2654cf26e59ad3ef81ce17927c56
 
 vpn_location=$1
 vpn_provider=$2
