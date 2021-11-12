@@ -50,8 +50,8 @@ sudo ./spawn.sh vpn_location EXPRESSVPN port vpn_username vpn_password container
 sudo ./spawn.sh list vpn_provider port vpn_username vpn_password container_restart
 ```
 
-  > Example:
-  > If ovpn_list file contained
+  > Example:  
+  > If `ovpn_list` file contained
   >
   > ```text
   >   my_expressvpn_japan_-_tokyo_udp
