@@ -14,7 +14,7 @@ Each ovpn file runs in a seperate docker container. The ovpn to proxy conversion
 - Copy `spawn.sh` from this repo to destination machine (linux)  
 - If many proxies need to be created at once, also copy `ovpn_list`  
   - Delete unneeded lines (proxies), remaining lines will be created
-- Keep username and password from handy [expressvpn.com](https://www.expressvpn.com/setup#manual)
+- Keep username and password handy [expressvpn.com](https://www.expressvpn.com/setup#manual)
 - Install docker if not done already
 
 ## Usage
@@ -33,7 +33,7 @@ The .ovpn file to use is not provided as file, only as name. The Transmission-se
 - ### Single proxy creation
 
 ```shell
-sudo ./spawn.sh vpn_location EXPRESSVPN port vpn_username vpn_password container_restart
+sudo ./spawn.sh <vpn_location> <vpn_provider> <port> <vpn_username> <vpn_password> <container_restart>
 ```
 
   > Example:
@@ -48,7 +48,7 @@ sudo ./spawn.sh vpn_location EXPRESSVPN port vpn_username vpn_password container
 
 ```shell
 sudo ./spawn.sh list vpn_provider port vpn_username vpn_password container_restart
-```
+```™
 
   > Example:  
   > If `ovpn_list` file contained
