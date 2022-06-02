@@ -48,7 +48,7 @@ sudo ./spawn.sh <vpn_location> <vpn_provider> <port> <vpn_username> <vpn_passwor
 
 ```shell
 sudo ./spawn.sh list vpn_provider port vpn_username vpn_password container_restart
-```™
+```
 
   > Example:  
   > If `ovpn_list` file contained
