@@ -61,11 +61,11 @@ sudo ./spawn.sh \
 ```shell
 sudo ./spawn.sh \
     list \
-    vpn_provider \
-    port \
-    vpn_username \
-    vpn_password \
-    container_restart
+    <vpn_provider> \
+    <port> \
+    <vpn_username> \
+    <vpn_password> \
+    <container_restart>
 ```
 
 #### Example:  
