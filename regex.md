@@ -1,4 +1,6 @@
-#### The vpn list on <https://www.expressvpn.com/setup#manual> can be transformed into a transmission-ovpn readable format. With the regex steps below (search & replace), this can be easily transformed
+# Intro
+
+The vpn list on [expressvpn.com/setup#manual](https://www.expressvpn.com/setup#manual) can be copied and transformed into a transmission-ovpn readable format, to create it from scratch with the kost recent servers. With the regex steps below (search & replace), this can be easily transformed
 
 ### remove heades
 
