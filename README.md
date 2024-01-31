@@ -62,7 +62,7 @@ sudo ./spawn.sh \
 sudo ./spawn.sh \
     list \
     <vpn_provider> \
-    <port> \
+    <starting_port> \
     <vpn_username> \
     <vpn_password> \
     <container_restart>
