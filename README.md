@@ -6,7 +6,7 @@ Each ovpn file translates into a seperate docker container. The ovpn to proxy co
 ## Features
 
 - Deletes transmission-ovpn containers which have `status=created` and are non functional
-- Iterates over ports, until a free one is found run a proxy container on
+- Iterates over ports, until a free one is found to run a proxy container on
 - Configurable `docker run --restart` argument 
 
 ## Setup
