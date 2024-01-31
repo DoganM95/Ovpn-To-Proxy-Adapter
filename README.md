@@ -1,4 +1,4 @@
-# Description
+# Intro
 
 Creates proxy servers from .ovpn files, which can be downloaded from [expressvpn.com under manual](https://www.expressvpn.com/setup#manual).
 Each ovpn file translates into a seperate docker container. The ovpn to proxy conversion is provided by [haugene/docker-transmission-openvpn](https://github.com/haugene/docker-transmission-openvpn).
@@ -15,6 +15,7 @@ Each ovpn file translates into a seperate docker container. The ovpn to proxy co
 - If many proxies need to be created at once, also copy `ovpn_list`  
   - Delete unneeded lines (proxies), remaining lines will be created
 - Keep username and password handy for [expressvpn.com](https://www.expressvpn.com/setup#manual)
+- Optionally create a fresh list of servers using [this guide](https://github.com/DoganM95/Expressvpn-Proxy-Adapter/blob/master/regex.md)
 
 ## Usage
 
