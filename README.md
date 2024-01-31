@@ -35,7 +35,8 @@ The `.ovpn` file to use is not provided as file, but as a name (string). The Tra
 sudo ./spawn.sh \
     <vpn_location> \
     <vpn_provider> \
-    <port> <vpn_username> \
+    <port> \
+    <vpn_username> \
     <vpn_password> \
     <container_restart>
 ```
