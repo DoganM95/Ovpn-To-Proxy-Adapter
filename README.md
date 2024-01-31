@@ -18,7 +18,7 @@ Each ovpn file translates into a seperate docker container. The ovpn to proxy co
 
 ## Usage
 
-The `.ovpn` file to use is not provided as file, but as a name (string). The Transmission-service then fetches the corresponding file and handles the rest. A full list is provided in the `ovpn_list` file. Last modified date is last updated date. `ovpn_list` file needs to be in the same directory as this script for batch.
+The `.ovpn` file to use is not provided as file, but as a name (string). The Transmission-service then fetches the corresponding file and handles the rest. A full list is provided in the `ovpn_list` file. Last modified date is last updated date. `ovpn_list` file needs to be in the same directory as this script for batch. The `\` after each line is just a line break for shell command-readability and can be removed to make a single liner.
 
 ### Script parameters
 
@@ -52,11 +52,18 @@ sudo ./spawn.sh \
 ### Multi proxy creation (batch)
 
 ```shell
-sudo ./spawn.sh list vpn_provider port vpn_username vpn_password container_restart
+sudo ./spawn.sh \
+    list \
+    vpn_provider \
+    port \
+    vpn_username \
+    vpn_password \
+    container_restart
 ```
 
 #### Example:  
-If `ovpn_list` file contained
+
+If `ovpn_list` file contains
 
 ```text
 my_expressvpn_japan_-_tokyo_udp
@@ -64,10 +71,14 @@ my_expressvpn_ukraine_udp
 my_expressvpn_usa_-_new_york_-_2_udp
 ```
 
-Then the command
+Then the following would create 3 proxy servers, one for each location. First (Japan) would listen on port 8900, Second (Ukraine) on port 8901, etc.
 
 ```shell
-sudo ./spawn.sh list EXPRESSVPN 8900 abc123 def456 always
+sudo ./spawn.sh \
+    list \
+    EXPRESSVPN \
+    8900 \
+    abc123 \
+    def456 \
+    always
 ```
-
-would create 3 proxy servers, one for each location. First (Japan) would listen on port 8900, Second (Ukraine) on port 8901, etc.
