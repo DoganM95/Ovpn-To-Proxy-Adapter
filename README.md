@@ -32,7 +32,12 @@ The `.ovpn` file to use is not provided as file, but as a name (string). The Tra
 ### Single proxy creation
 
 ```shell
-sudo ./spawn.sh <vpn_location> <vpn_provider> <port> <vpn_username> <vpn_password> <container_restart>
+sudo ./spawn.sh \
+    <vpn_location> \
+    <vpn_provider> \
+    <port> <vpn_username> \
+    <vpn_password> \
+    <container_restart>
 ```
 
 #### Example:
