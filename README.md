@@ -106,3 +106,25 @@ sudo ./spawn.sh \
     always \
     192.168.0.0/24
 ```
+
+## Useful docker commands
+
+### Stop all openvpn containers
+```shell
+docker ps -a --format "{{.Names}}" | grep "openvpn" | xargs -r -I {} docker stop {}
+```
+
+### Remove all stopped openvpn containers
+```shell
+docker ps -a --format "{{.Names}}" | grep "openvpn" | xargs -r -I {} docker rm {}
+```
+
+### Shell into the container (if only one is running)
+```shell
+docker exec -it $(docker ps -a --format '{{.Names}}' | grep 'openvpn' | head -n 1) /bin/sh
+```
+
+### Show logs of the container (in only one is running)
+```shell
+docker logs $(docker ps -a --format '{{.Names}}' | grep 'openvpn' | head -n 1)
+```
