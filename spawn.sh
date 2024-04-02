@@ -6,6 +6,7 @@ starting_port=$3
 vpn_username=$4
 vpn_password=$5
 container_restart=$6
+network_cidr=$7
 
 main() {
     echo "Removing all haugene-transmission-vpn containers with status=created. These are faulty containers and will now be replaced by working ones."
@@ -50,20 +51,18 @@ create_container() {
     echo "Configuring container for $vpn_provider"
 
     docker run \
-        -e "CONFIG_MOD_PING=0" \
-        -e "LOCAL_NETWORK=10.0.0.0/24" \
+        --cap-add=NET_ADMIN \
+        -d \
+        -e "LOCAL_NETWORK=$network_cidr" \
         -e "OPENVPN_USERNAME=$vpn_username" \
         -e "OPENVPN_PASSWORD=$vpn_password" \
         -e "OPENVPN_PROVIDER=$vpn_provider" \
         -e "OPENVPN_CONFIG=$vpn_name" \
-        -e "OPENVPN_OPTS=--ping 10 --pull-filter ignore ping" \
         -e "WEBPROXY_ENABLED=true" \
         -e "WEBPROXY_PORT=8118" \
-        -p "$starting_port:8118" \
-        -d \
-        --restart "$container_restart" \
-        --cap-add=NET_ADMIN \
         --name="haugene-transmission-openvpn-$vpn_location" \
+        -p "$starting_port:8118" \
+        --restart "$container_restart" \
         haugene/transmission-openvpn:latest
 
     echo "Port mappe to this container's Web Proxy: $starting_port"
