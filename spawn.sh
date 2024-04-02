@@ -9,21 +9,22 @@ container_restart=$6
 
 main() {
     echo "Removing all haugene-transmission-vpn containers with status=created. These are faulty containers and will now be replaced by working ones."
-    $(docker rm $(docker ps -a --filter "name=haugene-transmission-openvpn" --filter "status=created" -q)) # removes all transmission-vpn containers with status = "created" (== non-functional)
+    # Remove non-functional containers
+    $(docker rm $(docker ps -a --filter "name=haugene-transmission-openvpn" --filter "status=created" -q))
     FILE=./ovpn_list
     EXISTING_CONTAINERS=$(docker ps -a --filter "name=haugene-transmission-openvpn" --format {{.Names}})
     if [[ "list" = $vpn_location ]]; then
         if [ -e "$FILE" ]; then
-            sed -i '/^$/d' $FILE # blank lines deletion
-            echo "" >>$FILE      # blank line addition (eof)
-            echo "Found a list with $(wc -l $FILE) vpn's."
+            sed -i '/^$/d' $FILE
+            echo "" >>$FILE
+            echo "Found a list with $(wc -l <$FILE) vpn's."
             while read line; do
-                line=$(trim_extension $line)
+                line=$(trim_extension "$line")
                 if ! [[ $EXISTING_CONTAINERS =~ $line ]]; then
                     echo "Creating container for $line"
-                    create_container $line
+                    create_container "$line"
                 else
-                    echo "Skipping creation of $line . Equally named container already exists."
+                    echo "Skipping creation of $line. Equally named container already exists."
                 fi
                 echo
             done <$FILE
@@ -32,9 +33,9 @@ main() {
             return 1
         fi
     else
-        vpn_location=$(trim_extension $vpn_location)
+        vpn_location=$(trim_extension "$vpn_location")
         echo "Creating container for $vpn_location"
-        create_container $vpn_location
+        create_container "$vpn_location"
     fi
 }
 
@@ -46,31 +47,32 @@ create_container() {
     done
 
     vpn_name=$1
-    mkdir /volume1/docker/Transmission-openvpn/data/$vpn_name
+    echo "Configuring container for $vpn_provider"
 
     docker run \
-        -e "LOCAL_NETWORK=192.168.0.0/24" \
+        -e "CONFIG_MOD_PING=0" \
+        -e "LOCAL_NETWORK=10.0.0.0/24" \
         -e "OPENVPN_USERNAME=$vpn_username" \
         -e "OPENVPN_PASSWORD=$vpn_password" \
         -e "OPENVPN_PROVIDER=$vpn_provider" \
-        -e "OPENVPN_CONFIG=$1" \
+        -e "OPENVPN_CONFIG=$vpn_name" \
+        -e "OPENVPN_OPTS=--ping 10 --pull-filter ignore ping" \
         -e "WEBPROXY_ENABLED=true" \
         -e "WEBPROXY_PORT=8118" \
-        -v "/volume1/docker/Transmission-openvpn/data/$vpn_name:/data" \
-        -p $starting_port:8118 \
+        -p "$starting_port:8118" \
         -d \
-        --restart $container_restart \
+        --restart "$container_restart" \
         --cap-add=NET_ADMIN \
-        --name="haugene-transmission-openvpn-$1" \
+        --name="haugene-transmission-openvpn-$vpn_location" \
         haugene/transmission-openvpn:latest
 
-    echo "Port mapped/exposed to this containers Web Proxy: $starting_port"
+    echo "Port mappe to this container's Web Proxy: $starting_port"
     ((starting_port++))
 }
 
 trim_extension() {
-    stripped_name=$(echo "$1" | sed 's/.ovpn//')
-    echo $stripped_name
+    stripped_name=$(echo "$1" | sed 's/.ovpn$//')
+    echo "$stripped_name"
 }
 
 main
