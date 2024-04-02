@@ -9,12 +9,13 @@ container_restart=$6
 network_cidr=$7
 
 main() {
+    vpn_location=$(trim_extension "$vpn_location") # Location with extension ".ovpn" removed
     echo "Removing all haugene-transmission-vpn containers with status=created. These are faulty containers and will now be replaced by working ones."
     # Remove non-functional containers
     $(docker rm $(docker ps -a --filter "name=haugene-transmission-openvpn" --filter "status=created" -q))
     FILE=./ovpn_list
     EXISTING_CONTAINERS=$(docker ps -a --filter "name=haugene-transmission-openvpn" --format {{.Names}})
-    if [[ "list" = $vpn_location ]]; then
+    if [[ "list" = "$vpn_location" ]]; then
         if [ -e "$FILE" ]; then
             sed -i '/^$/d' $FILE
             echo "" >>$FILE
@@ -34,7 +35,6 @@ main() {
             return 1
         fi
     else
-        vpn_location=$(trim_extension "$vpn_location")
         echo "Creating container for $vpn_location"
         create_container "$vpn_location"
     fi
