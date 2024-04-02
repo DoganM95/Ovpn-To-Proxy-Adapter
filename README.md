@@ -1,34 +1,47 @@
 # Intro
 
-Creates proxy servers from .ovpn files, which can be downloaded from [expressvpn.com under manual](https://www.expressvpn.com/setup#manual).
-Each ovpn file translates into a seperate docker container. The ovpn to proxy conversion is provided by [haugene/docker-transmission-openvpn](https://github.com/haugene/docker-transmission-openvpn).
+Creates proxy servers for locations listed by a VPN provider, e.g. ExpressVPN, Surfshark, etc. 
+Each (OpenVPN) location translates into a seperate docker container. The OpenVPN to Proxy conversion is provided by [haugene/docker-transmission-openvpn](https://github.com/haugene/docker-transmission-openvpn).
 
 ## Features
 
 - Deletes transmission-ovpn containers which have `status=created` and are non functional
-- Iterates over ports, until a free one is found to run a proxy container on
-- Configurable `docker run --restart` argument 
+- Iterates over ports, until a free one is found to run a proxy container on in batch mode
+- Supports many vpn providers, see the full list at [vpn-configs-contrib](https://github.com/haugene/vpn-configs-contrib).
+- Configurable `docker run --restart` argument
 
 ## Setup
 
-- Copy `spawn.sh` from this repo to destination machine (linux)  
-- If many proxies need to be created at once, also copy `ovpn_list`  
-  - Delete unneeded lines (proxies), remaining lines will be created
-- Keep username and password handy for [expressvpn.com](https://www.expressvpn.com/setup#manual)
-- Optionally create a fresh list of servers using [this guide](https://github.com/DoganM95/Expressvpn-Proxy-Adapter/blob/master/regex.md)
+- Copy `spawn.sh` from this repo to destination machine (linux)
+- Retrieve the username & password, which are usually not the vpn login credentials, but special ones created by the provider, shown when choosing manual setup e.g.
+  -  [ExpressVPN](https://www.expressvpn.com/setup#manual)
+  -  [Surfshark](https://my.surfshark.com/vpn/manual-setup/main/openvpn)
+- If only one location should be translated into a proxy server
+  - Head over to [vpn-configs-contrib](https://github.com/haugene/vpn-configs-contrib/tree/main/openvpn)
+  - Find the folder of the vpn provider used
+  - Copy the name of the server needed
+  - Skip to the Usage part
+- If many proxies need to be created at once, create a file called `ovpn_list` in the same directory as the script
+  - Copy each needed location's name into the `ovpn_list`
 
 ## Usage
 
-The `.ovpn` file to use is not provided as file, but as a name (string). The Transmission-service then fetches the corresponding file and handles the rest. A full list is provided in the `ovpn_list` file. Last modified date is last updated date. `ovpn_list` file needs to be in the same directory as this script for batch. The `\` after each line is just a line break for shell command-readability and can be removed to make a single liner.
+### Notes
+
+- The `.ovpn` file to use is not provided as file, but as a name (string). The Transmission-service fetches the corresponding file and handles the rest 
+- The vpn providers supported are listed at [vpn-configs-contrib](https://github.com/haugene/vpn-configs-contrib)
+- The script parameters for `spawn.sh` below must be entered in the same order as listed
+- when creating a proxy, the `.ovpn` can be added also, it will be removed by the script anyway
 
 ### Script parameters
 
-  - `vpn_location`: the desired line chosen from the `ovpn_list`
-  - `port`: the port on which the proxy should serve
-  - `starting_port`: first port on which proxy creation should be tried on. If occupied, iterates until free port found
-  - `vpn_username`: the expressvpn username which you kept handy (see setup above)
-  - `vpn_password`: the corresponding password
-  - `container_restart`: docker argument, [quick usage in documentation](https://docs.docker.com/config/containers/start-containers-automatically/)
+  - `vpn_location`: The desired line chosen from the `ovpn_list`
+  - `vpn_provider`: The company of the service used (Internal or External), full list [here](https://haugene.github.io/docker-transmission-openvpn/supported-providers/#internal_providers)
+  - `starting_port`: The port on which the proxy should serve in single mode, and where it should start iterating in batch mode (see Features)
+  - `vpn_username`: The expressvpn username which you kept handy (see setup above)
+  - `vpn_password`: The corresponding password
+  - `container_restart`: The docker run restart behaviour like `always`, `unless-stopped`, etc, see [documentation](https://docs.docker.com/config/containers/start-containers-automatically/)
+  - `network_cidr`: The host network's range, e.g. `192.168.0.0/24`
 
 ### Single proxy creation
 
@@ -36,10 +49,11 @@ The `.ovpn` file to use is not provided as file, but as a name (string). The Tra
 sudo ./spawn.sh \
     <vpn_location> \
     <vpn_provider> \
-    <port> \
+    <starting_port> \
     <vpn_username> \
     <vpn_password> \
-    <container_restart>
+    <container_restart> \
+    <network_cidr>
 ```
 
 #### Example:
@@ -48,12 +62,13 @@ Create a proxy server, which connects to "Hong Kong - 2" and be available on por
 
 ```shell
 sudo ./spawn.sh \
-    my_expressvpn_hong_kong_-_2_udp \
+    my_expressvpn_hong_kong_-_2_udp.ovpn \
     EXPRESSVPN \
     8900 \
-    abc123 \
-    def456 \
-    always
+    y7v1wwy6wg5vh8s9jfn2sj3c \
+    ixay8f10fdljm31zks09x287 \
+    always \
+    192.168.0.0/24
 ```
 
 ### Multi proxy creation (batch)
@@ -65,7 +80,8 @@ sudo ./spawn.sh \
     <starting_port> \
     <vpn_username> \
     <vpn_password> \
-    <container_restart>
+    <container_restart> \
+    <network_cidr>
 ```
 
 #### Example:  
@@ -73,9 +89,9 @@ sudo ./spawn.sh \
 If `ovpn_list` file contains
 
 ```text
-my_expressvpn_japan_-_tokyo_udp
-my_expressvpn_ukraine_udp
-my_expressvpn_usa_-_new_york_-_2_udp
+jp-tok-st014.prod.surfshark.com_udp.ovpn
+ua-iev.prod.surfshark.com_udp.ovpn
+us-nyc.prod.surfshark.com
 ```
 
 Then the following would create 3 proxy servers, one for each location. First (Japan) would listen on port 8900, Second (Ukraine) on port 8901, etc.
@@ -83,9 +99,10 @@ Then the following would create 3 proxy servers, one for each location. First (J
 ```shell
 sudo ./spawn.sh \
     list \
-    EXPRESSVPN \
+    SURFSHARK \
     8900 \
-    abc123 \
-    def456 \
-    always
+    someone@something.com \
+    8x5o60nz22gll9o8qsf63to2 \
+    always \
+    192.168.0.0/24
 ```
