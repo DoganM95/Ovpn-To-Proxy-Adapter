@@ -31,7 +31,8 @@ Each (OpenVPN) location translates into a seperate docker container. The OpenVPN
 - The `.ovpn` file to use is not provided as file, but as a name (string). The Transmission-service fetches the corresponding file and handles the rest 
 - The vpn providers supported are listed at [vpn-configs-contrib](https://github.com/haugene/vpn-configs-contrib)
 - The script parameters for `spawn.sh` below must be entered in the same order as listed
-- when creating a proxy, the `.ovpn` can be added also, it will be removed by the script anyway
+- When creating a proxy, the `.ovpn` can be added also, it will be removed by the script anyway
+- Batch craeting with restart argument `on-failure:5` is recommended, as non-functional vpn's won't constantly try to restart but stay stopped
 
 ### Script parameters
 
@@ -103,7 +104,7 @@ sudo ./spawn.sh \
     8900 \
     someone@something.com \
     8x5o60nz22gll9o8qsf63to2 \
-    always \
+    aon-failure:5 \
     192.168.0.0/24
 ```
 
