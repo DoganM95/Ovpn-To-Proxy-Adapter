@@ -1,6 +1,6 @@
 #!/bin/bash
 
-vpn_location=$(trim_extension "$1") # Location with extension ".ovpn" removed
+vpn_location=$1
 vpn_provider=$2
 starting_port=$3
 vpn_username=$4
@@ -12,9 +12,8 @@ ovpn_list=./ovpn_list
 existing_containers=$(docker ps -a --filter "name=haugene-transmission-openvpn" --format "{{.Names}}")
 
 main() {
-    echo "Removing all haugene-transmission-vpn containers with status=created. These are faulty containers and will now be replaced by working ones."
-    docker rm $(docker ps -a --filter "name=haugene-transmission-openvpn" --filter "status=created" -q) # Remove non-functional containers
-    if [[ "list" = "$vpn_location" ]]; then
+    vpn_location=$(trim_extension "$vpn_location") # Location with extension ".ovpn" removed
+    if [[ "$vpn_location" = "list" ]]; then
         if [ -e "$ovpn_list" ]; then
             sed -i '/^$/d' "$ovpn_list"
             echo "" >>"$ovpn_list"
