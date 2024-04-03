@@ -15,12 +15,15 @@ main() {
     vpn_location=$(trim_extension "$vpn_location") # location with the extension ".ovpn" removed
     if [[ "$vpn_location" = "list" ]]; then
         if [ -e "$ovpn_list" ]; then
+            dos2unix "$ovpn_list"             # convert crlf to lf (fallback for whole file)
             sed -i '/^$/d' "$ovpn_list"       # remove all empty lines
-            sed -i 's/\.ovpn//g' "$ovpn_list" # remove all ".ovpn" subsctrings
+            sed -i 's/\.ovpn//g' "$ovpn_list" # remove all ".ovpn" substrings
             echo "" >>"$ovpn_list"
             echo "Found a list with $(wc -l <"$ovpn_list") vpn's."
+            cat "$ovpn_list"
             while read line; do
-                line=$(trim_extension "$line")
+                # line=$(trim_extension "$line")
+                # echo "$line"
                 if ! [[ "$existing_containers" =~ $line ]]; then
                     echo "Creating container for $line"
                     create_container "$line"
@@ -59,7 +62,7 @@ create_container() {
         -e "OPENVPN_CONFIG=$vpn_name" \
         -e "WEBPROXY_ENABLED=true" \
         -e "WEBPROXY_PORT=8118" \
-        --name="haugene-transmission-openvpn-proxy-$vpn_location" \
+        --name="haugene-transmission-openvpn-proxy-$vpn_name" \
         -p "$starting_port:8118" \
         --restart "$container_restart" \
         haugene/transmission-openvpn:latest
