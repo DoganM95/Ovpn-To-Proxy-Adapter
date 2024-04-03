@@ -21,9 +21,8 @@ main() {
             echo "Found a list with $(wc -l <"$ovpn_list") vpn's."
             cat "$ovpn_list"
             while read line; do
-                # line=$(trim_extension "$line")
-                # echo "$line"
                 if ! [[ "$existing_containers" =~ $line ]]; then
+                    echo ""
                     echo "Creating container for $line"
                     create_container "$line"
                 else
@@ -49,7 +48,6 @@ create_container() {
 
     vpn_name=$1
     echo "Configuring container for $vpn_provider"
-
     docker run \
         --cap-add=NET_ADMIN \
         -d \
