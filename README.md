@@ -114,7 +114,7 @@ sudo ./spawn.sh \
 docker ps -a --format "{{.Names}}" | grep "openvpn" | xargs -r -I {} docker stop {}
 ```
 
-### Remove all openvpn containers
+### Stop and remove all openvpn containers
 ```shell
 docker ps -a --format "{{.Names}}" | grep "openvpn" | xargs -r -I {} docker rm -f {}
 ```
