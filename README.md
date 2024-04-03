@@ -31,7 +31,14 @@ Each (OpenVPN) location translates into a seperate docker container. The OpenVPN
 - The `.ovpn` file to use is not provided as file, but as a name (string). The Transmission-service fetches the corresponding file and handles the rest 
 - The vpn providers supported are listed at [vpn-configs-contrib](https://github.com/haugene/vpn-configs-contrib)
 - The script parameters for `spawn.sh` below must be entered in the same order as listed
-- when creating a proxy, the `.ovpn` can be added also, it will be removed by the script anyway
+- When creating a proxy, the `.ovpn` can be added also, it will be removed by the script anyway
+- Batch craeting with restart argument `on-failure:5` is recommended, as non-functional vpn's won't constantly try to restart but stay stopped
+- If the proxy container needs to be used by another container X:
+  - Run a shell inside the container X using `docker exec -it <container_id_of_x> /bin/sh`
+  - Try to reach the docker host from within the container using `ping -c 4 host.docker.internal`
+    - If it says `ping: bad address 'host.docker.internal'`, add this to container X's run command: `--add-host=host.docker.internal:host-gateway` and resart it
+    - If it (now) says e.g. `PING host.docker.internal (172.17.0.1): 56 data bytes`, the host and other containers can now be reached from inside of container X
+    - Use `host.docker.internal` as the hostname and the proxy containers port to use the proxy
 
 ### Script parameters
 
@@ -103,28 +110,38 @@ sudo ./spawn.sh \
     8900 \
     someone@something.com \
     8x5o60nz22gll9o8qsf63to2 \
-    always \
+    aon-failure:5 \
     192.168.0.0/24
 ```
 
 ## Useful docker commands
 
 ### Stop all openvpn containers
+
 ```shell
 docker ps -a --format "{{.Names}}" | grep "openvpn" | xargs -r -I {} docker stop {}
 ```
 
 ### Stop and remove all openvpn containers
+
 ```shell
 docker ps -a --format "{{.Names}}" | grep "openvpn" | xargs -r -I {} docker rm -f {}
 ```
 
+### Remove only stopped openvpn containers
+
+```shell
+docker ps -a --filter "status=exited" --format "{{.ID}} {{.Names}}" | grep openvpn | cut -d ' ' -f1 | xargs docker rm -f
+```
+
 ### Shell into the container (if only one is running)
+
 ```shell
 docker exec -it $(docker ps -a --format '{{.Names}}' | grep 'openvpn' | head -n 1) /bin/sh
 ```
 
 ### Show logs of the container (in only one is running)
+
 ```shell
 docker logs $(docker ps -a --format '{{.Names}}' | grep 'openvpn' | head -n 1)
 ```
