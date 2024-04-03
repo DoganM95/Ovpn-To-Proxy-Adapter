@@ -12,10 +12,11 @@ ovpn_list=./ovpn_list
 existing_containers=$(docker ps -a --filter "name=haugene-transmission-openvpn" --format "{{.Names}}")
 
 main() {
-    vpn_location=$(trim_extension "$vpn_location") # Location with extension ".ovpn" removed
+    vpn_location=$(trim_extension "$vpn_location") # location with the extension ".ovpn" removed
     if [[ "$vpn_location" = "list" ]]; then
         if [ -e "$ovpn_list" ]; then
-            sed -i '/^$/d' "$ovpn_list"
+            sed -i '/^$/d' "$ovpn_list"       # remove all empty lines
+            sed -i 's/\.ovpn//g' "$ovpn_list" # remove all ".ovpn" subsctrings
             echo "" >>"$ovpn_list"
             echo "Found a list with $(wc -l <"$ovpn_list") vpn's."
             while read line; do
