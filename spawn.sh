@@ -18,7 +18,6 @@ main() {
             dos2unix "$ovpn_list"             # convert crlf to lf (fallback for whole file)
             sed -i '/^$/d' "$ovpn_list"       # remove all empty lines
             sed -i 's/\.ovpn//g' "$ovpn_list" # remove all ".ovpn" substrings
-            echo "" >>"$ovpn_list"
             echo "Found a list with $(wc -l <"$ovpn_list") vpn's."
             cat "$ovpn_list"
             while read line; do
@@ -30,7 +29,6 @@ main() {
                 else
                     echo "Skipping creation of $line. Equally named container already exists."
                 fi
-                echo
             done <"$ovpn_list"
         else
             echo "No ovpn_list file found. Exiting."
