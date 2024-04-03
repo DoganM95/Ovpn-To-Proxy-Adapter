@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 vpn_location=$(trim_extension "$1") # Location with extension ".ovpn" removed
 vpn_provider=$2
@@ -9,26 +9,26 @@ container_restart=$6
 network_cidr=$7
 
 ovpn_list=./ovpn_list
-existing_containers=$(docker ps -a --filter "name=haugene-transmission-openvpn" --format {{.Names}})
+existing_containers=$(docker ps -a --filter "name=haugene-transmission-openvpn" --format "{{.Names}}")
 
 main() {
     echo "Removing all haugene-transmission-vpn containers with status=created. These are faulty containers and will now be replaced by working ones."
-    $(docker rm $(docker ps -a --filter "name=haugene-transmission-openvpn" --filter "status=created" -q)) # Remove non-functional containers
+    docker rm $(docker ps -a --filter "name=haugene-transmission-openvpn" --filter "status=created" -q) # Remove non-functional containers
     if [[ "list" = "$vpn_location" ]]; then
         if [ -e "$ovpn_list" ]; then
-            sed -i '/^$/d' $ovpn_list
-            echo "" >>$ovpn_list
-            echo "Found a list with $(wc -l <$ovpn_list) vpn's."
+            sed -i '/^$/d' "$ovpn_list"
+            echo "" >>"$ovpn_list"
+            echo "Found a list with $(wc -l <"$ovpn_list") vpn's."
             while read line; do
                 line=$(trim_extension "$line")
-                if ! [[ $existing_containers =~ $line ]]; then
+                if ! [[ "$existing_containers" =~ $line ]]; then
                     echo "Creating container for $line"
                     create_container "$line"
                 else
                     echo "Skipping creation of $line. Equally named container already exists."
                 fi
                 echo
-            done <$ovpn_list
+            done <"$ovpn_list"
         else
             echo "No ovpn_list file found. Exiting."
             return 1
@@ -40,7 +40,7 @@ main() {
 }
 
 create_container() {
-    ports_in_use=$(docker ps --format {{.Ports}} | cut -d ':' -f2 | cut -d '-' -f 1 | cut -d '/' -f 1)
+    ports_in_use=$(docker ps --format "{{.Ports}}" | cut -d ':' -f2 | cut -d '-' -f 1 | cut -d '/' -f 1)
     while [[ $ports_in_use =~ $starting_port ]]; do
         echo "Port $starting_port already in use, trying next port."
         ((starting_port++))
