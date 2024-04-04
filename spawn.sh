@@ -15,9 +15,10 @@ main() {
     vpn_location=$(trim_extension "$vpn_location") # location with the extension ".ovpn" removed
     if [[ "$vpn_location" = "list" ]]; then
         if [ -e "$ovpn_list" ]; then
-            dos2unix "$ovpn_list"             # convert crlf to lf (fallback for whole file)
+            dos2unix "$ovpn_list"             # convert possible file crlf to lf
             sed -i '/^$/d' "$ovpn_list"       # remove all empty lines
             sed -i 's/\.ovpn//g' "$ovpn_list" # remove all ".ovpn" substrings
+            echo "" >>"$ovpn_list"            # Add EOF
             echo "Found a list with $(wc -l <"$ovpn_list") vpn's."
             cat "$ovpn_list"
             while read line; do
