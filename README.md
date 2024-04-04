@@ -111,7 +111,7 @@ sudo ./spawn.sh \
     8900 \
     someone@something.com \
     8x5o60nz22gll9o8qsf63to2 \
-    aon-failure:5 \
+    on-failure:5 \
     192.168.0.0/24
 ```
 
