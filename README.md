@@ -7,7 +7,7 @@ Each (OpenVPN) location translates into a seperate docker container. The OpenVPN
 
 - Deletes transmission-ovpn containers which have `status=created` and are non functional
 - Iterates over ports, until a free one is found to run a proxy container on in batch mode
-- Supports many vpn providers, see the full list at [vpn-configs-contrib](https://github.com/haugene/vpn-configs-contrib).
+- Supports many vpn providers, see the full list at [vpn-configs-contrib](https://github.com/haugene/vpn-configs-contrib?tab=readme-ov-file#providers-and-status-of-configs).
 - Configurable `docker run --restart` argument
 
 ## Setup
