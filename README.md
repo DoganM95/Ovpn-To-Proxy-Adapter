@@ -34,6 +34,8 @@ Each (OpenVPN) location translates into a seperate docker container. The OpenVPN
 - When creating a proxy, the `.ovpn` can be added also, it will be removed by the script anyway
 - Batch craeting with restart argument `on-failure:5` is recommended, as non-functional vpn's won't constantly try to restart but stay stopped
 - If the proxy container needs to be used by another container X:
+  - Shell into container X with `docker exec -it <container_name_or_id> /bin/sh`
+  - Get the gateway address with `ifconfig`, in my case `172.17.0.0`
   - Add `172.17.0.0/24` to the network parameter of the shell script, e.g. `sudo ./spawn.sh ... 172.17.0.0/24,192.168.0.0/24` 
   - Run a shell inside the container X using `docker exec -it <container_id_of_x> /bin/sh`
   - Try to reach the docker host from within container X using `ping -c 4 host.docker.internal`
