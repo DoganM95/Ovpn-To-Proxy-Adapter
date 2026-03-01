@@ -49,9 +49,8 @@ create_container() {
 
     vpn_name=$1
     echo "Configuring container for $vpn_provider"
-    docker run \
+    docker run -d \
         --cap-add=NET_ADMIN \
-        -d \
         -e "LOCAL_NETWORK=$network_cidr" \
         -e "OPENVPN_USERNAME=$vpn_username" \
         -e "OPENVPN_PASSWORD=$vpn_password" \
@@ -61,6 +60,7 @@ create_container() {
         -e "WEBPROXY_PORT=8118" \
         --name="haugene-transmission-openvpn-proxy-$vpn_name" \
         -p "$starting_port:8118" \
+        --pull always \
         --restart "$container_restart" \
         haugene/transmission-openvpn:latest
 
