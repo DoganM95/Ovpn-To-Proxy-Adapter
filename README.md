@@ -37,7 +37,7 @@ Each (OpenVPN) location translates into a seperate docker container. The OpenVPN
   - Shell into container X with `docker exec -it <container_name_or_id> /bin/sh`
   - Get the gateway address with `ifconfig`, in my case `172.17.0.0`
   - Add `172.17.0.0/24` to the network parameter of the shell script, e.g. `sudo ./spawn.sh ... 172.17.0.0/24,192.168.0.0/24` 
-  - Run a shell inside the container X using `docker exec -it <container_id_of_x> /bin/sh`
+  - Shell back into container X with `docker exec -it <container_name_or_id> /bin/sh`
   - Try to reach the docker host from within container X using `ping -c 4 host.docker.internal`
     - If it says `ping: bad address 'host.docker.internal'`, add this to container X's run command: `--add-host=host.docker.internal:host-gateway` and resart it
     - If it (now) says e.g. `PING host.docker.internal (172.17.0.1): 56 data bytes`, the host and other containers can now be reached from inside of container X
@@ -105,6 +105,7 @@ us-nyc.prod.surfshark.com
 ```
 
 Then the following would create 3 proxy servers, one for each location. First (Japan) would listen on port 8900, Second (Ukraine) on port 8901, etc.
+Note: the network-cidr param would be `172.17.0.0/24,192.168.0.0/24`, if the container needs to be used as a proxy by other containers, see notes section above.
 
 ```shell
 sudo ./spawn.sh \
