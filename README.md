@@ -23,6 +23,10 @@ Each (OpenVPN) location translates into a seperate docker container. The OpenVPN
   - Skip to the Usage part
 - If many proxies need to be created at once, create a file called `ovpn_list` in the same directory as the script
   - Copy each needed location's name into the `ovpn_list`
+- Ideally install `dos2unix` (makes sure windows newlines don't break anything)
+  ```
+  apt update && apt install dos2unix
+  ```
 
 ## Usage
 
