@@ -55,7 +55,7 @@ Each (OpenVPN) location translates into a seperate docker container. The OpenVPN
   - `vpn_username`: The expressvpn username which you kept handy (see setup above)
   - `vpn_password`: The corresponding password
   - `container_restart`: The docker run restart behaviour like `always`, `unless-stopped`, etc, see [documentation](https://docs.docker.com/config/containers/start-containers-automatically/)
-  - `network_cidr`: The host network's range, e.g. `192.168.0.0/24`
+  - `network_cidr`: The host network's range, e.g. `192.168.0.0/24` & optionally the docker gateway address, e.g. `172.17.0.0/24`, see notes above
 
 ### Single proxy creation
 
