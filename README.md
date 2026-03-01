@@ -105,7 +105,6 @@ us-nyc.prod.surfshark.com
 ```
 
 Then the following would create 3 proxy servers, one for each location. First (Japan) would listen on port 8900, Second (Ukraine) on port 8901, etc.
-Note: the network-cidr param would be `172.17.0.0/24,192.168.0.0/24`, if the container needs to be used as a proxy by other containers, see notes section above.
 
 ```shell
 sudo ./spawn.sh \
@@ -117,6 +116,9 @@ sudo ./spawn.sh \
     on-failure:5 \
     192.168.0.0/24
 ```
+
+- The network-cidr param would be `172.17.0.0/24,192.168.0.0/24`, if the container needs to be used as a proxy by other containers, see notes section above
+- If you get an auth error, make sure to copy the credentials from the vpn provider, e.g. surfshark shows an email but copies an alphanumeric string
 
 ## Useful docker commands
 
